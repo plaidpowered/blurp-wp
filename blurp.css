@@ -1,0 +1,38 @@
+.blurp.preloaded-background {
+    background-color: white;
+    background-size: cover;
+    position: relative;
+    max-width: 100%;
+    height: auto;
+    padding: 0;
+
+    filter: blur(10px);
+    transition: filter 1s;
+}
+
+.blurp.preloaded-background img {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.blurp.preloaded-background.loaded {
+    filter: blur(0);
+}
+.blurp.preloaded-background.loaded img {
+    opacity: 1;
+}
+
+.blurp .blurp-spacer {
+    padding: 0;
+    width: 0;
+    visibility: hidden;
+    overflow: hidden;
+}
