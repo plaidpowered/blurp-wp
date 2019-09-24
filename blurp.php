@@ -51,22 +51,17 @@ class Blurp {
 			$full_src = get_attached_file( $img_id );
 			$ext = substr( $full_src, strrpos( $full_src, '.' ) + 1 );
 			$filepath = substr( $full_src, 0, strrpos( $full_src, '/' ) );
-			
+
 			if ( ! in_array( $ext, [ 'gif', 'jpg', 'png', 'jpeg' ] ) ) {
 				continue;
 			}
 
-			$tinyimg_src = image_get_intermediate_size( $img_id, 'tiny' );
-			if ( ! $tinyimg_src ) {
+			$data = self::get_tinyimg_data( $img_id, $filepath );
+			if ( empty( $data ) ) {
 				continue;
 			}
-			$path = $filepath . substr( $tinyimg_src['url'], strrpos( $tinyimg_src['url'], '/' ) );
+
 			
-			if ( ! file_exists( $path ) ) {
-				continue;
-			}
-			
-			$data = file_get_contents( $path );
 
 			$src = preg_match( '/src="([^"]*?)"/', $tag[0], $fileurl );
 
@@ -85,29 +80,8 @@ class Blurp {
 				$classes[] = 'webp-ok';
 			}
 
-			$attrs['style'] = sprintf( 'background-image:url(%s);width:%s',
-				'data:image/jpeg;base64,' . base64_encode($data),
-				$attrs['data-width'] . 'px'
-			);
-			$newtag  = str_replace( '<img', '<div', $tag[0] );
-			$newtag  = str_replace( '/>', '>', $newtag );
-
-			$newtag = str_replace( 'class="', 'class="' . implode( ' ', $classes ) . ' ', $newtag );
-
-			$newtag = str_replace( 'src=', 'data-src=', $newtag );
-			$newtag = str_replace( 'srcset=', 'data-srcset=', $newtag );
-			$newtag = str_replace( 'sizes=', 'data-sizes=', $newtag );
-
-			$attrs_string = '';
-			foreach ( $attrs as $key => $value ) {
-				$attrs_string .= ' ' . $key . '="' . esc_attr( $value ) . '"';
-			}
-			$newtag = str_replace( '<div', '<div' . $attrs_string, $newtag );
-
-			$newtag .= sprintf( '<div class="blurp-spacer" style="padding-top:%s"></div>',
-				round( 100 * $attrs['data-height'] / $attrs['data-width'], 2 ) . '%'
-			);
-			$newtag .= '</div>';
+			$attrs['style'] = self::get_tinyimg_style( $data, $attrs );
+			$newtag = self::make_tinyimg_tag( $tag[0], $classes, $attrs );
 
 			$replacements[] = array(
 				'old' => $tag[0],
@@ -121,6 +95,101 @@ class Blurp {
 		}
 
 		return $content;
+
+	}
+
+	static function get_tinyimg_data( $img_id, $folderpath ) {
+
+		$tinyimg_src = image_get_intermediate_size( $img_id, 'tiny' );
+
+		if ( ! $tinyimg_src ) {
+			return false;
+		}
+		$path = $folderpath . substr( $tinyimg_src['url'], strrpos( $tinyimg_src['url'], '/' ) );
+
+		if ( ! file_exists( $path ) ) {
+			return false;
+		}
+
+		$data = file_get_contents( $path );
+
+		return $data;
+
+	}
+
+	static function get_tinyimg_style( $data, $attrs ) {
+
+		return sprintf( 'background-image:url(%s);width:%s',
+			'data:image/jpeg;base64,' . base64_encode($data),
+			$attrs['data-width'] . 'px'
+		);
+
+	}
+
+	static function make_tinyimg_tag( $original, $classes, $attrs ) {
+
+
+
+		$newtag  = str_replace( '<img', '<div', $original );
+		$newtag  = str_replace( '/>', '>', $newtag );
+
+		$newtag = str_replace( 'class="', 'class="' . implode( ' ', $classes ) . ' ', $newtag );
+
+		$newtag = str_replace( 'src=', 'data-src=', $newtag );
+		$newtag = str_replace( 'srcset=', 'data-srcset=', $newtag );
+		$newtag = str_replace( 'sizes=', 'data-sizes=', $newtag );
+
+		$attrs_string = '';
+		foreach ( $attrs as $key => $value ) {
+			$attrs_string .= ' ' . $key . '="' . esc_attr( $value ) . '"';
+		}
+		$newtag = str_replace( '<div', '<div' . $attrs_string, $newtag );
+
+		$newtag .= sprintf( '<div class="blurp-spacer" style="padding-top:%s"></div>',
+			round( 100 * $attrs['data-height'] / $attrs['data-width'], 2 ) . '%'
+		);
+		$newtag .= '</div>';
+
+		return $newtag;
+
+	}
+
+	static function blurry_thumbnail( $attachment_id, $size = 'thumbnail', $attrs = [] ) {
+
+		$image = wp_get_attachment_image( $attachment_id, $size, false, $attrs );
+		$image_src = wp_get_attachment_image_src( $attachment_id, $size );
+
+		if ( empty( $image_src[1] ) ) {
+			return $image;
+		}
+
+		unset( $attrs['class'] );
+		$classes = [
+			'blurp',
+			'preloaded-background',
+			'wp-image-' . $attachment_id,
+		];
+
+		$attrs['data-width'] = $image_src[1];
+		$attrs['data-height'] = $image_src[2];
+
+		$full_src = get_attached_file( $attachment_id );
+		$filepath = substr( $full_src, 0, strrpos( $full_src, '/' ) );
+
+		$data = self::get_tinyimg_data( $attachment_id, $filepath );
+		if ( empty( $data ) ) {
+			return $image;
+		}
+		$attrs['style'] = self::get_tinyimg_style( $data, $attrs );
+
+		$thumbnail_path = $filepath . substr( $fileurl[1], strrpos( $fileurl[1], '/' ) );
+		if ( file_exists( $thumbnail_path . '.webp' ) ) {
+			$classes[] = 'webp-ok';
+		}
+
+		return self::make_tinyimg_tag( $image, $classes, $attrs );
+
+		
 
 	}
 
