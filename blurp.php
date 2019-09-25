@@ -15,7 +15,7 @@ class Blurp {
 	private $images;
 
 	function __construct() {
-		$this->$images = [];
+		$this->images = [];
 
 		add_filter( 'the_content', array( $this, 'replace_images' ), 9999 );
 		add_action( 'wp_enqueue_scripts', array( $this , 'enqueue' ) );
@@ -23,8 +23,8 @@ class Blurp {
 	}
 
 	function enqueue() {
-		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.10', true );
-		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.10' );
+		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.11', true );
+		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.11' );
 	}
 
 	function add_tiny_size() {
@@ -182,7 +182,7 @@ class Blurp {
 		}
 		$attrs['style'] = self::get_tinyimg_style( $data, $attrs );
 
-		$thumbnail_path = $filepath . substr( $fileurl[1], strrpos( $fileurl[1], '/' ) );
+		$thumbnail_path = $filepath . substr( $image_src[1], strrpos( $image_src[1], '/' ) );
 		if ( file_exists( $thumbnail_path . '.webp' ) ) {
 			$classes[] = 'webp-ok';
 		}
