@@ -21,8 +21,4 @@ are not being reprocessed every time a page is loaded.
 This plugin is WebP aware! The server-side script checks to see if a .webp
 file exists for the original image, and if the browser is compatible,
 the front-end script will upgrade the original image to the webp version.
-This methodology utilized is cache and CDN friendly!
-
-If you use a plugin like WebP Express to generate webp images, simply set
-it up to generate the files, but not actually filter the content, page
-HTML, or rewrite the page urls.
+This methodology is cache and CDN friendly!
