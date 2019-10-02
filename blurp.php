@@ -5,7 +5,7 @@ Description: Make images terrible and then make them better
 Author: Paul Houser
 Author URI: https://plaidpowered.com
 Text Domain: blurp
-Version: 1.0.19
+Version: 1.0.20
 */
 
 global $async_stack;
@@ -23,8 +23,8 @@ class Blurp {
 	}
 
 	function enqueue() {
-		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.19', true );
-		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.19' );
+		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.20', true );
+		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.20' );
 	}
 
 	function add_tiny_size() {

@@ -76,7 +76,7 @@ function blurpScrolled() {
 		
 		window.setTimeout( function ( timer ) {
 			window.blurpScrollTimer = null;
-		}, 500, blurpScrollTimer );
+		}, 100, blurpScrollTimer );
 	}
 
 }

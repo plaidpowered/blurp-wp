@@ -33,7 +33,7 @@
 
 .blurp .blurp-spacer {
     padding: 0;
-    width: 0;
+    max-width: 100%;
     visibility: hidden;
     overflow: hidden;
 }
