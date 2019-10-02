@@ -23,8 +23,8 @@ class Blurp {
 	}
 
 	function enqueue() {
-		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.11', true );
-		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.11' );
+		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.19', true );
+		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.19' );
 	}
 
 	function add_tiny_size() {
@@ -43,6 +43,10 @@ class Blurp {
 		$replacements = [];
 
 		foreach( $images as $tag ) {
+
+			if ( strpos( $tag[2], 'no-preload' ) !== false ) {
+				continue;
+			}
 
 			$img_id = $tag[4];
 			$classes = [ 'blurp', 'preloaded-background' ];
@@ -119,9 +123,8 @@ class Blurp {
 
 	static function get_tinyimg_style( $data, $attrs ) {
 
-		return sprintf( 'background-image:url(%s);width:%s',
-			'data:image/jpeg;base64,' . base64_encode($data),
-			$attrs['data-width'] . 'px'
+		return sprintf( 'background-image:url(%s)',
+			'data:image/jpeg;base64,' . base64_encode($data)
 		);
 
 	}
@@ -145,8 +148,9 @@ class Blurp {
 		}
 		$newtag = str_replace( '<div', '<div' . $attrs_string, $newtag );
 
-		$newtag .= sprintf( '<div class="blurp-spacer" style="padding-top:%s"></div>',
-			round( 100 * $attrs['data-height'] / $attrs['data-width'], 2 ) . '%'
+		$newtag .= sprintf( '<div class="blurp-spacer" style="padding-top:%s;width:%s"></div>',
+			round( 100 * $attrs['data-height'] / $attrs['data-width'], 2 ) . '%',
+			$attrs['data-width'] . 'px'
 		);
 		$newtag .= '</div>';
 

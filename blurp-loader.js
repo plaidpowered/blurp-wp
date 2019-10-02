@@ -1,9 +1,14 @@
 
 var blurpImages = null;
 
-function blurpImgLoaded ( e ) {
+function blurpImgLoaded( e ) {
 	var self = this;
 	self.parentNode.classList.add( 'loaded' );
+	window.setTimeout( blurpRemoveOldBackground, 500, self.parentNode );
+}
+
+function blurpRemoveOldBackground( target ) {
+	target.style.backgroundImage = '';
 }
 
 function blurpSwapImages( preloaded ) {
