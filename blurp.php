@@ -3,9 +3,9 @@
 Plugin Name: Blur Up!
 Description: Make images terrible and then make them better
 Author: Paul Houser
-Author URI: https://oneupweb.com
+Author URI: https://plaidpowered.com
 Text Domain: blurp
-Version: 1.0.10
+Version: 1.0.19
 */
 
 global $async_stack;
