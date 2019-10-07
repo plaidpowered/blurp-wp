@@ -1,0 +1,17 @@
+{
+  "name": "blurp",
+  "version": "1.0.22",
+  "scripts": {
+    "build:js": "babel blurp-loader.js --out-file blurp-loader.min.js && uglifyjs blurp-loader.min.js -c -m -o blurp-loader.min.js"
+  },
+  "author": "Paul Houser",
+  "license": "GPLv3+",
+  "dependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.6.2",
+    "core-js": "^3.2.1",
+    "uglify-js": "^3.6.0"
+  },
+  "browserslist": "> 0.25%, not dead"
+}

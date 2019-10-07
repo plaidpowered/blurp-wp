@@ -14,3 +14,5 @@
  */
 
 require_once 'class-blurp.php';
+
+add_action( 'after_setup_theme', array( new Blurp(), 'setup' ) );

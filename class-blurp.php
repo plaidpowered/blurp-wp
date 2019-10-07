@@ -11,19 +11,30 @@
 class Blurp {
 
 	/**
+	 * Constructor - currently does nothing. Does it even need declared? I don't know.
+	 */
+	public function __construct() {}
+
+	/**
 	 * Sets up filters for blurp to do its work.
 	 */
-	public function __construct() {
+	public function setup() {
+
+		if ( ! apply_filters( 'use_blurp', true ) ) {
+			return;
+		}
+
 		add_filter( 'the_content', array( $this, 'replace_images' ), 9999 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
 		add_action( 'init', array( $this, 'add_tiny_size' ) );
+
 	}
 
 	/**
 	 * Enqueues front-end blurp script and required stylesheets.
 	 */
 	public function enqueue() {
-		wp_enqueue_script( 'blurp', plugins_url( 'blurp-loader.js', __FILE__ ), array(), '1.0.22', true );
+		wp_enqueue_script( 'blurp', plugins_url( SCRIPT_DEBUG ? 'blurp-loader.js' : 'blurp-loader.min.js', __FILE__ ), array(), '1.0.22', true );
 		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.22' );
 	}
 
@@ -61,10 +72,10 @@ class Blurp {
 			$attrs   = [];
 
 			$full_src = get_attached_file( $img_id );
-			$ext      = substr( $full_src, strrpos( $full_src, '.' ) + 1 );
+			$ext      = strtolower( substr( $full_src, strrpos( $full_src, '.' ) + 1 ) );
 			$filepath = substr( $full_src, 0, strrpos( $full_src, '/' ) );
 
-			if ( ! in_array( $ext, [ 'gif', 'jpg', 'png', 'jpeg' ] ) ) {
+			if ( ! in_array( $ext, [ 'gif', 'jpg', 'png', 'jpeg' ], true ) ) {
 				continue;
 			}
 
@@ -114,7 +125,7 @@ class Blurp {
 	 * @param int    $img_id Post ID of image attachment.
 	 * @param string $folderpath Absolute folder path of original image.
 	 */
-	static function get_tinyimg_data( $img_id, $folderpath ) {
+	public static function get_tinyimg_data( $img_id, $folderpath ) {
 
 		$tinyimg_src = image_get_intermediate_size( $img_id, 'tiny' );
 
@@ -138,7 +149,7 @@ class Blurp {
 	 *
 	 * @param string $data Raw contents of the image file.
 	 */
-	static function get_tinyimg_style( $data ) {
+	public static function get_tinyimg_style( $data ) {
 
 		return sprintf(
 			'background-image:url(%s)',
@@ -152,9 +163,9 @@ class Blurp {
 	 *
 	 * @param string $original The original image tag to be replaced.
 	 * @param string $classes Classes to append to the blurp wrapper tag.
-	 * @param string $attr HTML tag attributes to include in the blurp wrapper tag.
+	 * @param string $attrs HTML tag attributes to include in the blurp wrapper tag.
 	 */
-	static function make_tinyimg_tag( $original, $classes, $attrs ) {
+	public static function make_tinyimg_tag( $original, $classes, $attrs ) {
 
 		$newtag = str_replace( '<img', '<div', $original );
 		$newtag = str_replace( '/>', '>', $newtag );
@@ -190,7 +201,7 @@ class Blurp {
 	 * @param string $size Final image thumbnail size to upgrade blurped image to.
 	 * @param string $attrs Additional attributes to include.
 	 */
-	static function blurry_thumbnail( $attachment_id, $size = 'thumbnail', $attrs = [] ) {
+	public static function blurry_thumbnail( $attachment_id, $size = 'thumbnail', $attrs = [] ) {
 
 		$image     = wp_get_attachment_image( $attachment_id, $size, false, $attrs );
 		$image_src = wp_get_attachment_image_src( $attachment_id, $size );
@@ -228,5 +239,3 @@ class Blurp {
 	}
 
 }
-
-$blurp = new Blurp();
