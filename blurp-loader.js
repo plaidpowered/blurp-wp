@@ -69,7 +69,7 @@ function blurpSwapImage( element ) {
 function blurpScrolled() {
 
 	if ( window.blurpScrollTimer === null ) {
-		console.log ( 'scroll timer fired' );
+
 		blurpSwapImages( blurpImages );
 
 		window.blurpScrollTimer = true;
