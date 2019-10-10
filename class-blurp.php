@@ -34,8 +34,8 @@ class Blurp {
 	 * Enqueues front-end blurp script and required stylesheets.
 	 */
 	public function enqueue() {
-		wp_enqueue_script( 'blurp', plugins_url( SCRIPT_DEBUG ? 'blurp-loader.js' : 'blurp-loader.min.js', __FILE__ ), array(), '1.0.22', true );
-		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.22' );
+		wp_enqueue_script( 'blurp', plugins_url( SCRIPT_DEBUG ? 'blurp-loader.js' : 'blurp-loader.min.js', __FILE__ ), array(), '1.0.23', true );
+		wp_enqueue_style( 'blurp', plugins_url( 'blurp.css', __FILE__ ), array(), '1.0.23' );
 	}
 
 	/**

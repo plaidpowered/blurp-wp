@@ -10,7 +10,7 @@
  * Author:      Paul Houser
  * Author URI:  https://plaidpowered.com
  * Text Domain: blurp
- * Version:     1.0.22
+ * Version:     1.0.23
  */
 
 require_once 'class-blurp.php';
