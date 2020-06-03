@@ -134,6 +134,26 @@ class Plugin {
 
 	}
 
+	public static function get_background_style( $img_id ) {
+
+		$full_src = get_attached_file( $img_id );
+		$ext      = strtolower( substr( $full_src, strrpos( $full_src, '.' ) + 1 ) );
+		$filepath = substr( $full_src, 0, strrpos( $full_src, '/' ) );
+
+		if ( ! in_array( $ext, [ 'gif', 'jpg', 'png', 'jpeg' ], true ) ) {
+			return '';
+		}
+
+		$data = self::get_tinyimg_data( $img_id, $filepath );
+
+		if ( ! $data ) {
+			return '';
+		}
+
+		return self::get_tinyimg_style( $data );
+
+	}
+
 	/**
 	 * Get the file contents of the image thumbnail
 	 *
